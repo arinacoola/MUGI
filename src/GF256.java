@@ -8,7 +8,6 @@ public class GF256{
             return (x << 1) & 0xFF;
         }
     }
-
     public static int mul3(int x){
         return (mul2(x) ^ x) & 0xFF;
     }
