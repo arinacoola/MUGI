@@ -1,4 +1,8 @@
 public class MugiCore {
+    private MugiState state;
+    public MugiCore(MugiState state) {
+        this.state = state;
+    }
 
     private static long[] rho1(long a0, long a1, long a2, long w1, long w2) {
         long newA0 = a1;
@@ -69,5 +73,13 @@ public class MugiCore {
         return y;
     }
 
+    public void next() {
+        long[] newA = rho1(state.a0, state.a1, state.a2, state.b[4], state.b[10]);
+        long[] newB = lambda1(state.b, state.a0);
+        state.a0 = newA[0];
+        state.a1 = newA[1];
+        state.a2 = newA[2];
+        state.b = newB;
+    }
 
 }
