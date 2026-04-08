@@ -7,7 +7,21 @@ public class MugiCore {
         return new long[]{newA0, newA1, newA2};
     }
 
-
+    private static long[] lambda1(long[] b, long a) {
+        if (b == null || b.length != 16) {
+            throw new IllegalArgumentException("b must contain exactly 16 words");
+        }
+        long[] newB = new long[16];
+        for (int j = 0; j < 16; j++) {
+            if (j != 0 && j != 4 && j != 10) {
+                newB[j] = b[j - 1];
+            }
+        }
+        newB[0] = b[15]^ a;
+        newB[4] = b[3]^ b[7];
+        newB[10] = b[9]^ Long.rotateLeft(b[13], 32);
+        return newB;
+    }
 
     private static int[] m(int[] x) {
         if (x == null || x.length != 4) {
