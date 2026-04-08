@@ -82,7 +82,7 @@ public class MugiCore {
         state.b = newB;
     }
 
-    public long strm() {
+    public long stream() {
         return state.a2;
     }
 
