@@ -1,4 +1,14 @@
 public class MugiCore {
+
+    private static long[] rho1(long a0, long a1, long a2, long w1, long w2) {
+        long newA0 = a1;
+        long newA1 = a2 ^ f(a1, w1) ^ MugiTables.D1;
+        long newA2 = a0 ^ f(a1, Long.rotateLeft(w2, 17)) ^ MugiTables.D2;
+        return new long[]{newA0, newA1, newA2};
+    }
+
+
+
     private static int[] m(int[] x) {
         if (x == null || x.length != 4) {
             throw new IllegalArgumentException("input for M must be exactly 4 bytes");
@@ -44,4 +54,6 @@ public class MugiCore {
         }
         return y;
     }
+
+
 }
