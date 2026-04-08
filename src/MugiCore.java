@@ -1,5 +1,21 @@
-public class F{
-    public static long apply(long x, long t){
+public class MugiCore {
+    private static int[] m(int[] x) {
+        if (x == null || x.length != 4) {
+            throw new IllegalArgumentException("input for M must be exactly 4 bytes");
+        }
+        int x0 = x[0] & 0xFF;
+        int x1 = x[1] & 0xFF;
+        int x2 = x[2] & 0xFF;
+        int x3 = x[3] & 0xFF;
+        int[] y = new int[4];
+        y[0] = (GF256.mul2(x0) ^ GF256.mul3(x1) ^ x2 ^ x3) & 0xFF;
+        y[1] = (x0 ^ GF256.mul2(x1) ^ GF256.mul3(x2) ^ x3) & 0xFF;
+        y[2] = (x0 ^ x1 ^ GF256.mul2(x2) ^ GF256.mul3(x3)) & 0xFF;
+        y[3] = (GF256.mul3(x0) ^ x1 ^ x2 ^ GF256.mul2(x3)) & 0xFF;
+        return y;
+    }
+
+    private static long f(long x, long t){
         long xPrime = x ^ t;
         int[] bytes = new int[8];
         for (int i = 0; i < 8; i++) {
@@ -11,8 +27,8 @@ public class F{
         }
         int[] left = {p[0], p[1], p[2], p[3]};
         int[] right = {p[4], p[5], p[6], p[7]};
-        int[] ql = M.apply(left);
-        int[] qr = M.apply(right);
+        int[] ql = m(left);
+        int[] qr = m(right);
         int[] resBytes = new int[8];
         resBytes[0] = qr[0]; // Q4
         resBytes[1] = qr[1]; // Q5
