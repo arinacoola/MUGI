@@ -4,6 +4,61 @@ public class MugiCore {
         this.state = state;
     }
 
+    public void initCipher(byte[] key, byte[] iv) {
+        if (key == null || key.length != 16) {
+            throw new IllegalArgumentException("key must be exactly 16 bytes");
+        }
+        if (iv == null || iv.length != 16) {
+            throw new IllegalArgumentException("iv must be exactly 16 bytes");
+        }
+        if (state == null) {
+            state = new MugiState();
+        }
+        long k0 = ByteUtils.bytesToLong(key, 0);
+        long k1 = ByteUtils.bytesToLong(key, 8);
+
+        long iv0 = ByteUtils.bytesToLong(iv, 0);
+        long iv1 = ByteUtils.bytesToLong(iv, 8);
+
+        long a0 = k0;
+        long a1 = k1;
+        long a2 = Long.rotateLeft(k0, 7) ^ Long.rotateRight(k1, 7) ^ MugiTables.D0;
+
+        long[] aTriplet;
+        long[] tempA0 = new long[16];
+
+        for (int i = 0; i < 16; i++) {
+            aTriplet = rho1(a0, a1, a2, 0L, 0L);
+            a0 = aTriplet[0];
+            a1 = aTriplet[1];
+            a2 = aTriplet[2];
+            tempA0[i] = a0;
+        }
+
+        for (int i = 0; i < 16; i++) {
+            state.b[15 - i] = tempA0[i];
+        }
+
+        a0 = a0 ^ iv0;
+        a1 = a1 ^ iv1;
+        a2 = a2 ^ Long.rotateLeft(iv0, 7) ^ Long.rotateRight(iv1, 7) ^ MugiTables.D0;
+
+        for (int i = 0; i < 16; i++) {
+            aTriplet = rho1(a0, a1, a2, 0L, 0L);
+            a0 = aTriplet[0];
+            a1 = aTriplet[1];
+            a2 = aTriplet[2];
+        }
+
+        state.a0 = a0;
+        state.a1 = a1;
+        state.a2 = a2;
+
+        for (int i = 0; i < 16; i++) {
+            next();
+        }
+    }
+
     private static long[] rho1(long a0, long a1, long a2, long w1, long w2) {
         long newA0 = a1;
         long newA1 = a2 ^ f(a1, w1) ^ MugiTables.D1;
@@ -73,6 +128,10 @@ public class MugiCore {
         return y;
     }
 
+    public long stream() {
+        return state.a2;
+    }
+
     public void next() {
         long[] newA = rho1(state.a0, state.a1, state.a2, state.b[4], state.b[10]);
         long[] newB = lambda1(state.b, state.a0);
@@ -82,8 +141,10 @@ public class MugiCore {
         state.b = newB;
     }
 
-    public long stream() {
-        return state.a2;
+    public long nextBlock() {
+        long z = stream();
+        next();
+        return z;
     }
 
 }
