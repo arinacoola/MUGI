@@ -4,6 +4,10 @@ public class MugiCore {
         this.state = state;
     }
 
+    public MugiCore() {
+        this.state = new MugiState();
+    }
+
     public void initCipher(byte[] key, byte[] iv) {
         if (key == null || key.length != 16) {
             throw new IllegalArgumentException("key must be exactly 16 bytes");
