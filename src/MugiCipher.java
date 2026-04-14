@@ -27,4 +27,8 @@ public class MugiCipher {
         }
         return res;
     }
+
+    public static byte[] decryptData(byte[] input, byte[] key, byte[] iv) {
+        return encryptData(input, key, iv);
+    }
 }
