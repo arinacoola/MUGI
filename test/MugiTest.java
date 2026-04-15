@@ -30,4 +30,30 @@ public class MugiTest {
         long s = core.nextBlock();
         assertNotEquals(f, s);
     }
+
+    @Test
+    void testDeterminism(){
+        byte[] key = {
+                0x00, 0x01, 0x02, 0x03,
+                0x04, 0x05, 0x06, 0x07,
+                0x08, 0x09, 0x0A, 0x0B,
+                0x0C, 0x0D, 0x0E, 0x0F
+        };
+        byte[] iv = {
+                (byte) 0xF0, (byte) 0xE0, (byte) 0xD0, (byte) 0xC0,
+                (byte) 0xB0, (byte) 0xA0, (byte) 0x90, (byte) 0x80,
+                0x70, 0x60, 0x50, 0x40,
+                0x30, 0x20, 0x10, 0x00
+        };
+        MugiCore core1 = new MugiCore();
+        MugiCore core2 = new MugiCore();
+        core1.initCipher(key, iv);
+        core2.initCipher(key, iv);
+        for (int i = 0; i < 10; i++) {
+            assertEquals(core1.nextBlock(), core2.nextBlock());
+        }
+    }
+
+
+
 }
