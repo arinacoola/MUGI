@@ -84,6 +84,19 @@ public class MugiTest {
         assertNotEquals(block1, block2);
     }
 
+    @Test
+    void testNoRepeatedBlocks() {
+        byte[] key = new byte[16];
+        byte[] iv = new byte[16];
+        MugiCore core = new MugiCore();
+        core.initCipher(key, iv);
+        long b1 =core.nextBlock();
+        long b2 = core.nextBlock();
+        long b3 = core.nextBlock();
+        long b4 = core.nextBlock();
+        assertTrue(b1 != b2 || b2 != b3 || b3 != b4);
+    }
+
 
 
 }
