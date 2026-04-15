@@ -19,4 +19,15 @@ public class MugiTest {
             assertEquals(exp, actual);
         }
     }
+
+    @Test
+    void testNextBlockChangesState() {
+        byte[] key = new byte[16];
+        byte[] iv = new byte[16];
+        MugiCore core = new MugiCore();
+        core.initCipher(key, iv);
+        long f = core.nextBlock();
+        long s = core.nextBlock();
+        assertNotEquals(f, s);
+    }
 }
