@@ -97,6 +97,16 @@ public class MugiTest {
         assertTrue(b1 != b2 || b2 != b3 || b3 != b4);
     }
 
+    @Test
+    void testNullKey() {
+        MugiCore core = new MugiCore();
+        byte[] iv = new byte[16];
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> core.initCipher(null, iv)
+        );
+        assertEquals("key must be exactly 16 bytes", ex.getMessage());
+    }
+
+
 
 
 }
