@@ -54,6 +54,36 @@ public class MugiTest {
         }
     }
 
+    @Test
+    void testDifferentKey() {
+        byte[] key1 = new byte[16];
+        byte[] key2 = new byte[16];
+        key2[0] = 1;
+        byte[] iv = new byte[16];
+        MugiCore core1 = new MugiCore();
+        MugiCore core2 = new MugiCore();
+        core1.initCipher(key1, iv);
+        core2.initCipher(key2, iv);
+        long block1 = core1.nextBlock();
+        long block2 = core2.nextBlock();
+        assertNotEquals(block1, block2);
+    }
+
+    @Test
+    void testDifferentIv() {
+        byte[] key = new byte[16];
+        byte[] iv1 = new byte[16];
+        byte[] iv2 = new byte[16];
+        iv2[15] = 1;
+        MugiCore core1 = new MugiCore();
+        MugiCore core2 = new MugiCore();
+        core1.initCipher(key, iv1);
+        core2.initCipher(key, iv2);
+        long block1 = core1.nextBlock();
+        long block2 = core2.nextBlock();
+        assertNotEquals(block1, block2);
+    }
+
 
 
 }
