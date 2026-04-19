@@ -17,6 +17,8 @@ public class Main {
                 (byte)0x3A, (byte)0x9B, (byte)0x16, (byte)0x4A,
                 (byte)0x25, (byte)0xE4, (byte)0x49, (byte)0x15
         };
+        Files.write(Path.of("key.bin"), key);
+        Files.write(Path.of("iv.bin"), iv);
         Path inputPath = Path.of("src/malenkyi_prynts_input.txt");
         Path encrpPath = Path.of("encrypted.bin");
         Path decrpPath = Path.of("decrypted.txt");
