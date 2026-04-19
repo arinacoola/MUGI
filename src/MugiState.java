@@ -4,4 +4,5 @@ public class MugiState {
     public long a2;
     public long[] b= new long[16];
 
+
 }

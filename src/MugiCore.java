@@ -63,6 +63,47 @@ public class MugiCore {
         }
     }
 
+    public long[] getInitPhaseState(byte[] key, byte[] iv, int step) {
+        if (key == null ||key.length != 16) {
+            throw new IllegalArgumentException("key must be exactly 16 bytes");
+        }
+        if (iv == null||iv.length != 16) {
+            throw new IllegalArgumentException("iv must be exactly 16 bytes");
+        }
+        long k0 = ByteUtils.bytesToLong(key,0);
+        long k1 = ByteUtils.bytesToLong(key,8);
+        long iv0 = ByteUtils.bytesToLong(iv,0);
+        long iv1 = ByteUtils.bytesToLong(iv,8);
+        long a0 = k0;
+        long a1 = k1;
+        long a2 = Long.rotateLeft(k0, 7) ^ Long.rotateRight(k1, 7) ^ MugiTables.D0;
+        for (int i = 0; i < 16; i++) {
+            long[] t = rho1(a0,a1,a2,0L,0L);
+            a0 = t[0];
+            a1 = t[1];
+            a2 = t[2];
+        }
+        if (step == 100) {
+            return new long[]{a0,a1,a2};
+        }
+        a0 ^= iv0;
+        a1 ^= iv1;
+        a2 ^= Long.rotateLeft(iv0, 7)^Long.rotateRight(iv1, 7) ^ MugiTables.D0;
+        if (step==200){
+            return new long[]{a0, a1, a2};
+        }
+        for (int i = 1; i <= 16; i++) {
+            long[] t = rho1(a0, a1, a2, 0L, 0L);
+            a0 = t[0];
+            a1 = t[1];
+            a2 = t[2];
+            if (step ==200 + i){
+                return new long[]{a0,a1,a2};
+            }
+        }
+        throw new IllegalArgumentException("unsupported step");
+    }
+
     private static long[] rho1(long a0, long a1, long a2, long w1, long w2) {
         long newA0 = a1;
         long newA1 = a2 ^ f(a1, w1) ^ MugiTables.D1;
@@ -149,6 +190,10 @@ public class MugiCore {
         long z = stream();
         next();
         return z;
+    }
+
+    public MugiState getState() {
+        return state;
     }
 
 }
