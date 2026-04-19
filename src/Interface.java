@@ -24,11 +24,14 @@ public class Interface extends JFrame {
         root.setBorder(new EmptyBorder(12, 12, 12, 12));
         setContentPane(root);
         root.add(top(), BorderLayout.NORTH);
+        root.add(tabs(), BorderLayout.CENTER);
+        root.add(bottom(), BorderLayout.SOUTH);
     }
 
     private JPanel top(){
         JPanel p = new JPanel(new BorderLayout(8, 8));
         p.setBackground(PN);
+        p.setBorder(border(""));
         JLabel t =new JLabel("  MUGI File Cipher  ", SwingConstants.CENTER);
         t.setFont(new Font("Serif", Font.BOLD, 30));
         t.setForeground(TT);
@@ -49,5 +52,140 @@ public class Interface extends JFrame {
         p.add(a,BorderLayout.SOUTH);
         return p;
     }
+
+    private JTabbedPane tabs(){
+        JTabbedPane t = new JTabbedPane();
+        t.setFont(new Font("SansSerif", Font.BOLD, 16));
+        t.addTab("Зашифрувати", mode(true));
+        t.addTab("Розшифрувати", mode(false));
+        return t;
+    }
+
+    private JPanel mode(boolean enc) {
+        JPanel wrap=new JPanel(new BorderLayout());
+        wrap.setBackground(BG);
+        wrap.setBorder(new EmptyBorder(8, 0, 0, 0));
+        JPanel box=new JPanel();
+        box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
+        box.setBackground(PN);
+        box.setBorder(border("Параметри"));
+        JTextField in = new JTextField();
+        JTextField out = new JTextField();
+        JTextField key = new JTextField();
+        JTextField iv = new JTextField();
+        box.add(Box.createVerticalStrut(12));
+        box.add(row("Вхідний файл:",in,false));
+        box.add(Box.createVerticalStrut(12));
+        box.add(row("Вихідний файл:", out, true));
+        box.add(Box.createVerticalStrut(12));
+        box.add(row("Файл ключа:", key, false));
+        box.add(Box.createVerticalStrut(12));
+        box.add(row("Файл IV:",iv,false));
+        box.add(Box.createVerticalStrut(18));
+        JButton b = btn(enc ? "Зашифрувати файл" : "Розшифрувати файл");
+        b.setAlignmentX(Component.CENTER_ALIGNMENT);
+        b.setPreferredSize(new Dimension(260, 44));
+        b.setMaximumSize(new Dimension(260, 44));
+        b.setBackground(new Color(244, 143, 177));
+        b.setForeground(Color.WHITE);
+        b.setFont(new Font("SansSerif", Font.BOLD, 15));
+        b.setBorder(new LineBorder(new Color(194, 24, 91), 1, true));
+        b.addActionListener(e -> {
+            st.setText("Статус: Виконується...");
+            try{
+                Thread.sleep(500);
+                st.setText(enc ? "Статус: Файл успішно зашифровано" : "Статус: Файл успішно розшифровано");
+            }
+            catch (Exception ex) {
+                st.setText("Статус: Помилка");
+            }
+        });
+        box.add(Box.createVerticalStrut(14));
+        wrap.add(box,BorderLayout.CENTER);
+        return wrap;
+    }
+
+    private JPanel row(String txt, JTextField f,boolean save){
+        JPanel p = new JPanel();
+        p.setBackground(PN);
+        p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
+        p.setBorder(new EmptyBorder(0, 16, 0, 16));
+        JLabel l =new JLabel(txt);
+        l.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        l.setForeground(TX);
+        l.setPreferredSize(new Dimension(170, 34));
+        l.setMinimumSize(new Dimension(170, 34));
+        l.setMaximumSize(new Dimension(170, 34));
+        f.setFont(new Font("SansSerif", Font.PLAIN, 15));
+        f.setPreferredSize(new Dimension(520, 34));
+        f.setMaximumSize(new Dimension(Integer.MAX_VALUE, 34));
+        JButton b = btn("Огляд...");
+        b.setPreferredSize(new Dimension(120, 34));
+        b.setMinimumSize(new Dimension(120, 34));
+        b.setMaximumSize(new Dimension(120, 34));
+        b.addActionListener(e -> pick(f, save));
+        p.add(l);
+        p.add(Box.createHorizontalStrut(12));
+        p.add(f);
+        p.add(Box.createHorizontalStrut(12));
+        p.add(b);
+        return p;
+    }
+
+    private JPanel bottom() {
+        JPanel p = new JPanel(new BorderLayout());
+        p.setBackground(PN);
+        p.setBorder(border(""));
+        st = new JLabel("Статус: Готово до роботи");
+        st.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        st.setForeground(TX);
+        st.setBorder(new EmptyBorder(10,12,10,12));
+        p.add(st, BorderLayout.CENTER);
+        return p;
+    }
+
+    private JButton btn(String txt) {
+        JButton b = new JButton(txt);
+        b.setFocusPainted(false);
+        b.setBackground(BT);
+        b.setForeground(TX);
+        b.setFont(new Font("SansSerif", Font.BOLD, 14));
+        b.setBorder(new EmptyBorder(8, 14, 8, 14));
+        b.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        b.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                b.setBackground(BH);
+            }
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                b.setBackground(BT);
+            }
+        });
+        return b;
+    }
+
+    private void pick(JTextField f, boolean save) {
+        JFileChooser c = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+        c.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        int r = save ? c.showSaveDialog(this) : c.showOpenDialog(this);
+        if (r==JFileChooser.APPROVE_OPTION) {
+            File file = c.getSelectedFile();
+            f.setText(file.getAbsolutePath());
+        }
+    }
+
+    private Border border(String txt) {
+        Border line = new LineBorder(new Color(233, 180, 200), 1, true);
+        Border pad = new EmptyBorder(10, 10, 10, 10);
+        Border all =new CompoundBorder(line, pad);
+        if (txt == null || txt.isBlank()) {
+            return all;
+        }
+        TitledBorder t = new TitledBorder(all, txt);
+        t.setTitleFont(new Font("SansSerif", Font.BOLD, 16));
+        t.setTitleColor(TT);
+        return t;
+    }
+
+
 
 }
