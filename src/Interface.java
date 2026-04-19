@@ -83,7 +83,7 @@ public class Interface extends JFrame {
         box.add(row("Файл ключа:", key, false));
         box.add(Box.createVerticalStrut(12));
         box.add(row("Файл IV:",iv,false));
-        box.add(Box.createVerticalStrut(18));
+        box.add(Box.createVerticalStrut(10));
         JButton b = btn(enc ? "Зашифрувати файл" : "Розшифрувати файл");
         b.setAlignmentX(Component.CENTER_ALIGNMENT);
         b.setPreferredSize(new Dimension(260, 44));
@@ -92,6 +92,9 @@ public class Interface extends JFrame {
         b.setForeground(Color.WHITE);
         b.setFont(new Font("SansSerif", Font.BOLD, 15));
         b.setBorder(new LineBorder(new Color(194, 24, 91), 1, true));
+        b.setContentAreaFilled(true);
+        b.setOpaque(true);
+        b.setFocusPainted(false);
         b.addActionListener(e -> {
             st.setText("Статус: Виконується...");
             if (in.getText().isEmpty() ||out.getText().isEmpty() || key.getText().isEmpty() || iv.getText().isEmpty()){
@@ -117,6 +120,7 @@ public class Interface extends JFrame {
             }
         });
         box.add(Box.createVerticalStrut(14));
+        box.add(b);
         wrap.add(box,BorderLayout.CENTER);
         return wrap;
     }
