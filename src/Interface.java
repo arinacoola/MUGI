@@ -23,6 +23,31 @@ public class Interface extends JFrame {
         root.setBackground(BG);
         root.setBorder(new EmptyBorder(12, 12, 12, 12));
         setContentPane(root);
+        root.add(top(), BorderLayout.NORTH);
+    }
+
+    private JPanel top(){
+        JPanel p = new JPanel(new BorderLayout(8, 8));
+        p.setBackground(PN);
+        JLabel t =new JLabel("  MUGI File Cipher  ", SwingConstants.CENTER);
+        t.setFont(new Font("Serif", Font.BOLD, 30));
+        t.setForeground(TT);
+        JLabel s = new JLabel("Шифрування та розшифрування файлів з використанням потокового шифру MUGI", SwingConstants.CENTER);
+        s.setFont(new Font("SansSerif", Font.PLAIN, 18));
+        s.setForeground(TX);
+        JTextArea a = new JTextArea("Як користуватися програмою:\nОберіть потрібний режим роботи, вкажіть вхідний файл, файл для збереження результату,\nфайл ключа та файл ініціалізаційного вектора (IV), а потім натисніть кнопку виконання.\nПісля успішного завершення програма повідомить про результат.");
+        a.setEditable(false);
+        a.setFocusable(false);
+        a.setOpaque(false);
+        a.setLineWrap(true);
+        a.setWrapStyleWord(true);
+        a.setFont(new Font("SansSerif", Font.PLAIN, 15));
+        a.setForeground(TX);
+        a.setBorder(new EmptyBorder(6, 10, 6, 10));
+        p.add(t,BorderLayout.NORTH);
+        p.add(s,BorderLayout.CENTER);
+        p.add(a,BorderLayout.SOUTH);
+        return p;
     }
 
 }
