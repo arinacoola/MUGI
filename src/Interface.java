@@ -3,6 +3,8 @@ import javax.swing.border.*;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class Interface extends JFrame {
     private static final Color BG = new Color(255, 240, 245);
@@ -92,8 +94,22 @@ public class Interface extends JFrame {
         b.setBorder(new LineBorder(new Color(194, 24, 91), 1, true));
         b.addActionListener(e -> {
             st.setText("Статус: Виконується...");
+            if (in.getText().isEmpty() ||out.getText().isEmpty() || key.getText().isEmpty() || iv.getText().isEmpty()){
+                st.setText("Статус: Заповніть усі поля");
+                return;
+            }
             try{
-                Thread.sleep(500);
+                byte[] inputData = Files.readAllBytes(Paths.get(in.getText()));
+                byte[] keyData = Files.readAllBytes(Paths.get(key.getText()));
+                byte[] ivData =Files.readAllBytes(Paths.get(iv.getText()));
+                byte[] res;
+                if (enc){
+                    res=MugiCipher.encryptData(inputData, keyData, ivData);
+                }
+                else {
+                    res=MugiCipher.decryptData(inputData,keyData, ivData);
+                }
+                Files.write(Paths.get(out.getText()),res);
                 st.setText(enc ? "Статус: Файл успішно зашифровано" : "Статус: Файл успішно розшифровано");
             }
             catch (Exception ex) {
